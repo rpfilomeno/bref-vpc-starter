@@ -1,0 +1,6 @@
+{
+    "require": {
+        "bref/bref": "^1.3",
+        "bref/extra-php-extensions": "^0.11.19"
+    }
+}

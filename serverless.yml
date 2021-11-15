@@ -1,0 +1,90 @@
+service: ffm-bref
+variablesResolutionMode: 20210326
+custom:
+  currentStage: ${opt:stage, self:provider.stage}
+  serverlessIfElse:
+      - If: '"${self:custom.currentStage}" == "prod"' #checks for flag ``--stage prod``
+        Exclude:    
+          - functions.develApi
+        Set:
+            #ToDo: set the environment for production
+            provider.profile: default
+            provider.stage: prod 
+            provider.environment.DB_CRM_PASS: ${ssm:/DB/credentials/DB_CRM_PASS,"null"}
+            provider.environment.DB_CRM_USER: ${ssm:/DB/credentials/DB_CRM_USER,"null"}
+            provider.environment.DB_CRM_SERV: ${ssm:/DB/credentials/DB_CRM_SERV,"null"}
+
+        ElseExclude:
+            - functions.prodApi
+        ElseSet:
+            #ToDo: set the environment for production
+            provider.environment.DB_CRM_PASS: ${ssm:/DB/credentials/DB_CRM_PASS_TEST,"null"}
+            provider.environment.DB_CRM_USER: ${ssm:/DB/credentials/DB_CRM_USER_TEST,"null"}
+            provider.environment.DB_CRM_SERV: ${ssm:/DB/credentials/DB_CRM_SERV_TEST,"null"}
+            
+
+provider:
+    name: aws
+    region: ap-southeast-2
+    runtime: provided.al2
+    profile: devel
+    stage: devel
+    lambdaHashingVersion: 20201221
+    environment:
+        BREF_PING_DISABLE: 1 #disable bref ping stats
+
+        #toDo: additional SSM to be exported to environment
+        API_HOST: ${ssm:/API/config/API_HOST,"ifconfig.me"}
+
+        
+ 
+plugins:
+    - ./vendor/bref/bref
+    - ./vendor/bref/extra-php-extensions
+    - serverless-plugin-ifelse
+
+
+functions:
+    develApi:
+        handler: index.php
+        description: ''
+        provisionedConcurrency: 1 #keeps 1 hot lambda function available
+        timeout: 20 # in seconds (API Gateway has a timeout of 29 seconds)
+        layers:
+            - ${bref:layer.php-74-fpm}
+            - ${bref-extra:pgsql-php-74}
+        events:
+            -   httpApi: '*'
+        vpc:
+            securityGroupIds:
+                #ToDO: specify the security group to use, eg: 
+                - sg-09443c4a3fabbb938 #Lambda-Stack
+            subnetIds:
+                #ToDo: specify atleast two subnets with NAT GW attached that corresponds to each AZ to use, eg:
+                - subnet-0dd28f9571cc2b9d2 #Zone 2a subnet wit NAT GW attached to Route Table
+                - subnet-0366e0ca6322bffea #Zone 2b subnet wit NAT GW attached to Route Table
+
+    prodApi:
+        handler: index.php
+        description: ''
+        timeout: 20 # in seconds (API Gateway has a timeout of 29 seconds)
+        layers:
+            - ${bref:layer.php-74-fpm}
+            - ${bref-extra:pgsql-php-74}
+        events:
+            -   httpApi: '*'
+        #ToDo setup VPC for production
+
+
+# Exclude files from deployment
+package:
+    patterns:
+        - '!node_modules/**'
+        - '!tests/**'
+        - '!README.md'
+        - '!setup.sh'
+        - '!package.json'
+        - '!package-lock.json'
+        - '!composer.json'
+        - '!composer.phar'
+        - '!composer.lock'

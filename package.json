@@ -1,0 +1,6 @@
+{
+    "devDependencies": {
+      "serverless-ignore": "^0.1.6",
+      "serverless-plugin-ifelse": "^1.0.7"
+    }
+  }
