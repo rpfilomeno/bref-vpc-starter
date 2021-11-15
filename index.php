@@ -70,7 +70,7 @@
         $db_pwd  = $_SERVER['DB_CRM_PASS'];
         $connection = pg_connect("host=$serv_ip dbname=$db_name user=$db_user password=$db_pwd");
 
-        if (!$connection = cc_pgcon()) {
+        if (!$connection) {
              $error = error_get_last();
             echo "Connection failed. Error was: ". $error['message']. "\n";
         } else {
