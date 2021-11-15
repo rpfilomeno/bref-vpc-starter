@@ -45,7 +45,8 @@
 		"sonarsource.sonarlint-vscode",
 		"bradlc.vscode-tailwindcss",
 		"cweijan.vscode-mysql-client2",
-		"brapifra.phpserver"
+		"brapifra.phpserver",
+		"gruntfuggly.todo-tree"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
