@@ -27,9 +27,7 @@
     </style>
 </head>
 <body>
-    <div class="row row-full">
-        <?php phpinfo() ?>
-    </div>
+    
 
     
     <div class="row higlight">
@@ -39,7 +37,9 @@
         $ch = curl_init();
 
         // set url
-        curl_setopt($ch, CURLOPT_URL, $_SERVER['API_HOST']);
+        $api_host = empty($_SERVER['API_HOST']) ?: "ifconfig.me";
+
+        curl_setopt($ch, CURLOPT_URL, $api_host );
 
         //return the transfer as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -64,10 +64,12 @@
     <h2>Checking RDS test connectiion</h2>:
     <?php
 
-        $serv_ip = $_SERVER['DB_CRM_SERV'];
-        $db_name = "ccloud_crm";
-        $db_user = $_SERVER['DB_CRM_USER'];
-        $db_pwd  = $_SERVER['DB_CRM_PASS'];
+        $serv_ip = empty($_SERVER['DB_CRM_SERV']) ?: "localhost";
+        $db_user = empty($_SERVER['DB_CRM_USER']) ?: "psql";
+        $db_pwd = empty($_SERVER['DB_CRM_PASS']) ?: "";
+        $db_name = empty($_SERVER['DB_CRM_NAME']) ?: "test";
+
+
         $connection = pg_connect("host=$serv_ip dbname=$db_name user=$db_user password=$db_pwd");
 
         if (!$connection) {
@@ -79,6 +81,9 @@
     ?>
     </div>
     
+    <div class="row row-full">
+        <?php phpinfo() ?>
+    </div>
     
     
 </body>

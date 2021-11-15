@@ -13,6 +13,7 @@ custom:
             provider.environment.DB_CRM_PASS: ${ssm:/DB/credentials/DB_CRM_PASS,"null"}
             provider.environment.DB_CRM_USER: ${ssm:/DB/credentials/DB_CRM_USER,"null"}
             provider.environment.DB_CRM_SERV: ${ssm:/DB/credentials/DB_CRM_SERV,"null"}
+            provider.environment.DB_CRM_NAME: ${ssm:/DB/credentials/DB_CRM_NAME,"null"}
 
         ElseExclude:
             - functions.prodApi
@@ -21,6 +22,7 @@ custom:
             provider.environment.DB_CRM_PASS: ${ssm:/DB/credentials/DB_CRM_PASS_TEST,"null"}
             provider.environment.DB_CRM_USER: ${ssm:/DB/credentials/DB_CRM_USER_TEST,"null"}
             provider.environment.DB_CRM_SERV: ${ssm:/DB/credentials/DB_CRM_SERV_TEST,"null"}
+            provider.environment.DB_CRM_NAME: ${ssm:/DB/credentials/DB_CRM_NAME_TEST,"null"}
             
 
 provider:
