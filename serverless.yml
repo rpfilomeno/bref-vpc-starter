@@ -19,8 +19,8 @@ provider:
     name: aws
     region: ap-southeast-2
     runtime: provided.al2
-    profile: devel
-    stage: devel
+    profile: ${self:custom.currentStage}
+    stage: ${self:custom.currentStage}
     lambdaHashingVersion: 20201221
     environment: ${file(./serverless-include/environment/${self:custom.currentStage}.environment.yml)}
 
