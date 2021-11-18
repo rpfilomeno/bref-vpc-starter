@@ -2,28 +2,18 @@ service: ffm-bref
 variablesResolutionMode: 20210326
 custom:
   currentStage: ${opt:stage, self:provider.stage}
-  serverlessIfElse:
-      - If: '"${self:custom.currentStage}" == "prod"' #checks for flag ``--stage prod``
-        Exclude:    
-          - functions.develApi
-        Set:
-            #TODO: set the environment for production
-            provider.profile: default
-            provider.stage: prod 
-            provider.environment.DB_CRM_PASS: ${ssm:/DB/credentials/DB_CRM_PASS,"null"}
-            provider.environment.DB_CRM_USER: ${ssm:/DB/credentials/DB_CRM_USER,"null"}
-            provider.environment.DB_CRM_SERV: ${ssm:/DB/credentials/DB_CRM_SERV,"null"}
-            provider.environment.DB_CRM_NAME: ${ssm:/DB/credentials/DB_CRM_NAME,"null"}
-
-        ElseExclude:
-            - functions.prodApi
-        ElseSet:
-            #TODO: set the environment for production
-            provider.environment.DB_CRM_PASS: ${ssm:/DB/credentials/DB_CRM_PASS_TEST,"null"}
-            provider.environment.DB_CRM_USER: ${ssm:/DB/credentials/DB_CRM_USER_TEST,"null"}
-            provider.environment.DB_CRM_SERV: ${ssm:/DB/credentials/DB_CRM_SERV_TEST,"null"}
-            provider.environment.DB_CRM_NAME: ${ssm:/DB/credentials/DB_CRM_NAME_TEST,"null"}
-            
+  localstack: #TODO: 
+    stages: #TODO: set which stages to use localstack
+      - local  
+    host: http://192.168.208.177  #TODO: set LocalStack host to connect to by running ipconfig in your machine
+    edgePort: 45660  #TODO: set LocalStack edge port to connect to, default 4566
+    autostart: false  #TODO: set true to Start LocalStack in Docker on Serverless deploy if NOT using devcontainer
+    #TODO: Run Localstack as separate docker when using devcontainers, therefore "autostart: false" must be set
+    # docker run --rm -it -p 45660:4566 localstack/localstack -e "SERVICES=rds,s3,elasticache,lambda" -e "EDGE_PORT=45660"
+    lambda:
+      mountCode: False #TODO: Set this flag to True improve performance when mounting Lambda code
+    docker:
+      sudo: False #TODO: Set this flag to True run "docker ..." commands as sudo, also if "autostart: true" is set. 
 
 provider:
     name: aws
@@ -32,52 +22,16 @@ provider:
     profile: devel
     stage: devel
     lambdaHashingVersion: 20201221
-    environment:
-        BREF_PING_DISABLE: 1 #disable bref ping stats
+    environment: ${file(./serverless-include/environment/${self:custom.currentStage}.environment.yml)}
 
-        #TODO: additional SSM to be exported to environment
-        API_HOST: ${ssm:/API/config/API_HOST,"ifconfig.me"}
-
-        
- 
 plugins:
     - ./vendor/bref/bref
     - ./vendor/bref/extra-php-extensions
-    - serverless-plugin-ifelse
-
+    - serverless-localstack
 
 functions:
-    develApi:
-        handler: index.php
-        description: ''
-        provisionedConcurrency: 1 #keeps 1 hot lambda function available
-        timeout: 20 # in seconds (API Gateway has a timeout of 29 seconds)
-        layers:
-            - ${bref:layer.php-74-fpm}
-            - ${bref-extra:pgsql-php-74}
-        events:
-            -   httpApi: '*'
-        vpc:
-            securityGroupIds:
-                #TODO: specify the security group to use, eg: 
-                - sg-09443c4a3fabbb938 #Lambda-Stack
-            subnetIds:
-                #TODO: specify atleast two subnets with NAT GW attached that corresponds to each AZ to use, eg:
-                - subnet-0dd28f9571cc2b9d2 #Zone 2a subnet wit NAT GW attached to Route Table
-                - subnet-0366e0ca6322bffea #Zone 2b subnet wit NAT GW attached to Route Table
-
-    prodApi:
-        handler: index.php
-        description: ''
-        timeout: 20 # in seconds (API Gateway has a timeout of 29 seconds)
-        layers:
-            - ${bref:layer.php-74-fpm}
-            - ${bref-extra:pgsql-php-74}
-        events:
-            -   httpApi: '*'
-        #TODO setup VPC for production
-
-
+    - ${file(./serverless-include/function/${self:custom.currentStage}.function.yml)}
+    
 # Exclude files from deployment
 package:
     patterns:
@@ -90,3 +44,4 @@ package:
         - '!composer.json'
         - '!composer.phar'
         - '!composer.lock'
+        - '!serverless-include/**'
