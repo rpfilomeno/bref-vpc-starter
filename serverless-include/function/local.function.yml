@@ -1,0 +1,18 @@
+api:
+  handler: index.php
+  description: ''
+  provisionedConcurrency: 1 #keeps 1 hot lambda function available
+  timeout: 20 # in seconds (API Gateway has a timeout of 29 seconds)
+  layers:
+      - ${bref:layer.php-74-fpm}
+      - ${bref-extra:pgsql-php-74}
+  events:
+      -   httpApi: '*'
+  vpc:
+      securityGroupIds:
+          #TODO: specify the devel security group to use, eg: 
+          - sg-09443c4a3fabbb938 #Lambda-Stack
+      subnetIds:
+          #TODO: specify atleast two devel subnets with NAT GW attached that corresponds to each AZ to use, eg:
+          - subnet-0dd28f9571cc2b9d2 #Zone 2a subnet wit NAT GW attached to Route Table
+          - subnet-0366e0ca6322bffea #Zone 2b subnet wit NAT GW attached to Route Table

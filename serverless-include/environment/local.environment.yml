@@ -1,0 +1,8 @@
+BREF_PING_DISABLE: 1 #disable bref ping stats
+API_HOST: ${ssm:/API/config/API_HOST,"ifconfig.me"}
+
+#TODO: fetch localstack ssm secret values and export it to environment
+DB_CRM_PASS: "password"
+DB_CRM_USER: "postgres"
+DB_CRM_SERV: "localhost"
+DB_CRM_NAME: "test"
