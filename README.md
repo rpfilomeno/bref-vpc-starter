@@ -2,6 +2,10 @@
 This project aims to provide a best practices boilerplate for running PHP websites on AWS Lambda.
 
 
+## Note: <em>Actively looking for collaboration.<br/>Need documentation and sample writers.<br/>Please DM.</em>
+
+
+
 ## Features
 - Uses Serverless Framework for deployment.
 - Uses Bref Framework for running PHP on Lambda.
