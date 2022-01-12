@@ -1,6 +1,12 @@
 # Bref+Serverless Starter
 This project aims to provide a best practices boilerplate for running PHP websites on AWS Lambda.
 
+## Quick start projectby Composer
+
+```bash
+php composer.phar create-project rpfilomeno/bref-vpc-starter path
+```
+
 
 ## Note: <em>Actively looking for collaboration.<br/>Need documentation and sample writers.<br/>Please DM.</em>
 
