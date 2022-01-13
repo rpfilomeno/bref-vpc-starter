@@ -23,3 +23,4 @@ php composer.phar create-project rpfilomeno/bref-vpc-starter path
 - (TODO) PWA sample PHP app.
 - (TODO) Setup toolchain.
 - (TODO) Setup Localstack using Terraform
+- (TODO) static assets serving vi aserverless-lift
