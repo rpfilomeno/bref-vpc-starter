@@ -21,6 +21,6 @@ php composer.phar create-project rpfilomeno/bref-vpc-starter path
 - (TODO) Config boilerplates for Session handling with Redis or Cookies.
 - (TODO) Logs aggregation to ELK.
 - (TODO) PWA sample PHP app.
-- (TODO) Setup toolchain.
+- (TODO) Setup CI toolchain (shift-left) for testing and code analysis
 - (TODO) Setup Localstack using Terraform
 - (TODO) static assets serving vi aserverless-lift
