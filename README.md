@@ -1,4 +1,8 @@
 # Bref+Serverless Starter
+
+[![Join the chat at https://gitter.im/rpfilomeno/bref-vpc-starter](https://badges.gitter.im/rpfilomeno/bref-vpc-starter.svg)](https://gitter.im/rpfilomeno/bref-vpc-starter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 This project aims to provide a best practices boilerplate for running PHP websites on AWS Lambda.
 
 ## Quick start projectby Composer
